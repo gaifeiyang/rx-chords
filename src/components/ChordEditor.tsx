@@ -64,9 +64,9 @@ export const ChordEditor: React.FC<ChordEditorProps> = ({ chord, sIdx, cIdx, onC
     ];
 
     return createPortal(
-        <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/60 backdrop-blur-sm" onClick={onClose}>
-            <div className="bg-[#1a1a1f] w-96 rounded-2xl shadow-2xl overflow-hidden border border-white/10" onClick={e => e.stopPropagation()}>
-                <div className="p-6">
+        <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4" onClick={onClose}>
+            <div className="bg-[#1a1a1f] w-full max-w-md rounded-2xl shadow-2xl overflow-hidden border border-white/10 max-h-[90vh] flex flex-col" onClick={e => e.stopPropagation()}>
+                <div className="p-6 overflow-y-auto custom-scrollbar">
                     <div className="flex justify-between items-start mb-6">
                         <div>
                             <h3 className="text-sm font-medium text-gray-400 mb-1">Edit Chord</h3>
@@ -122,7 +122,7 @@ export const ChordEditor: React.FC<ChordEditorProps> = ({ chord, sIdx, cIdx, onC
                         {/* Root Selector */}
                         <div>
                             <label className="block text-xs font-bold text-gray-500 uppercase mb-2">根音 (Root)</label>
-                            <div className="grid grid-cols-6 gap-2">
+                            <div className="grid grid-cols-4 sm:grid-cols-6 gap-2">
                                 {ROOTS.map(r => (
                                     <button
                                         key={r}
@@ -156,7 +156,7 @@ export const ChordEditor: React.FC<ChordEditorProps> = ({ chord, sIdx, cIdx, onC
                         {/* Bass Note (Optional) */}
                         <div>
                             <label className="block text-xs font-bold text-gray-500 uppercase mb-2">低音 (Bass / Inversion)</label>
-                            <div className="flex gap-2">
+                            <div className="flex gap-2 overflow-x-auto pb-2 no-scrollbar">
                                 <button
                                     onClick={() => setBass('')}
                                     className={`px-3 py-1 rounded text-xs ${!bass ? 'bg-gray-600 text-white' : 'bg-[#2d2d35] text-gray-400'}`}
@@ -167,12 +167,12 @@ export const ChordEditor: React.FC<ChordEditorProps> = ({ chord, sIdx, cIdx, onC
                                     <button
                                         key={`bass-${r}`}
                                         onClick={() => setBass(r)}
-                                        className={`w-8 py-1 rounded text-xs font-bold transition-colors ${bass === r ? 'bg-indigo-500 text-white' : 'bg-[#2d2d35] hover:bg-[#3d3d45] text-gray-500'
+                                        className={`min-w-[2rem] py-1 rounded text-xs font-bold transition-colors ${bass === r ? 'bg-indigo-500 text-white' : 'bg-[#2d2d35] hover:bg-[#3d3d45] text-gray-500'
                                             }`}
                                     >
                                         {r}
                                     </button>
-                                )).slice(0, 7)}
+                                ))}
                             </div>
                         </div>
 
