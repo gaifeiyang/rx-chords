@@ -2,16 +2,36 @@ import React, { useState } from 'react';
 import { Controls } from './components/Controls';
 import { SectionBlock } from './components/SectionBlock';
 import { useSongStore } from './store/songStore';
-import { Music, Settings as SettingsIcon, Menu, X } from 'lucide-react';
+import { Music, Settings as SettingsIcon, Plus } from 'lucide-react';
 import { useAudio } from './hooks/useAudio';
 import { StructureFlow } from './components/StructureFlow';
 import { SettingsModal } from './components/SettingsModal';
+import { MobileNav } from './components/MobileNav';
 
 const App: React.FC = () => {
-  const { sections, genre, settings, isPlaying } = useSongStore();
+  const { sections, genre, settings, isPlaying, addSection } = useSongStore();
   const [showSettings, setShowSettings] = useState(false);
-  const [showMobileMenu, setShowMobileMenu] = useState(false);
+  // Initial tab logic: if no sections, start at generator
+  const [activeTab, setActiveTab] = useState<'editor' | 'generator' | 'settings'>(
+    sections.length === 0 ? 'generator' : 'editor'
+  );
   const { playFullSong, stop } = useAudio();
+
+  // Auto-switch to editor when sections are generated
+  React.useEffect(() => {
+    if (sections.length > 0 && activeTab === 'generator') {
+      setActiveTab('editor');
+    }
+  }, [sections.length]);
+
+  // Handle tab changes
+  const handleTabChange = (tab: 'editor' | 'generator' | 'settings') => {
+    if (tab === 'settings') {
+      setShowSettings(true);
+    } else {
+      setActiveTab(tab);
+    }
+  };
 
   // Theme Effect
   React.useEffect(() => {
@@ -72,30 +92,14 @@ const App: React.FC = () => {
 
   return (
     <div className={`${getBackgroundStyle()} min-h-screen transition-colors duration-1000`}>
-      <div className="flex h-screen overflow-hidden">
-        {/* Mobile Menu Button */}
-        <button
-          onClick={() => setShowMobileMenu(!showMobileMenu)}
-          className="md:hidden fixed top-4 left-4 z-50 p-3 rounded-lg bg-primary text-white shadow-lg"
-        >
-          {showMobileMenu ? <X size={24} /> : <Menu size={24} />}
-        </button>
-
-        {/* Controls Sidebar - Hidden on mobile by default */}
-        <div className={`${showMobileMenu ? 'translate-x-0' : '-translate-x-full'
-          } md:translate-x-0 fixed md:relative z-40 transition-transform duration-300 ease-in-out h-screen w-full md:w-auto`}>
+      <div className="flex h-screen overflow-hidden pb-[env(safe-area-inset-bottom)] md:pb-0">
+        {/* Controls Sidebar - Mobile: View based, Desktop: Sidebar */}
+        <div className={`${activeTab === 'generator' ? 'block' : 'hidden'} md:block md:relative z-40 h-[calc(100vh-4rem)] md:h-screen w-full md:w-auto overflow-y-auto`}>
           <Controls />
         </div>
 
-        {/* Overlay for mobile menu */}
-        {showMobileMenu && (
-          <div
-            className="md:hidden fixed inset-0 bg-black/50 z-30"
-            onClick={() => setShowMobileMenu(false)}
-          />
-        )}
-
-        <div className="flex-1 flex flex-col h-screen overflow-hidden">
+        {/* Main Content - Mobile: View based, Desktop: Flex-1 */}
+        <div className={`${activeTab === 'editor' ? 'flex' : 'hidden'} md:flex flex-1 flex-col h-[calc(100vh-4rem)] md:h-screen overflow-hidden`}>
           {/* Header */}
           <header className="p-4 md:p-6 border-b border-white/10 backdrop-blur-sm flex items-center justify-between bg-white/20 dark:bg-black/10">
             <div className="flex items-center gap-3">
@@ -135,9 +139,22 @@ const App: React.FC = () => {
                 <SectionBlock key={section.id} section={section} sIdx={sIdx} />
               ))
             )}
+
+            {/* Add Section Button */}
+            {sections.length > 0 && (
+              <button
+                onClick={addSection}
+                className="w-full py-4 border-2 border-dashed border-gray-300 dark:border-white/10 rounded-2xl flex items-center justify-center gap-2 text-gray-500 dark:text-gray-400 hover:border-primary hover:text-primary hover:bg-primary/5 transition-all group"
+              >
+                <Plus size={24} className="group-hover:scale-110 transition-transform" />
+                <span className="font-bold">Add New Section</span>
+              </button>
+            )}
           </div>
         </div>
       </div>
+
+      <MobileNav activeTab={activeTab} onTabChange={handleTabChange} />
 
       {showSettings && <SettingsModal onClose={() => setShowSettings(false)} />}
     </div>
