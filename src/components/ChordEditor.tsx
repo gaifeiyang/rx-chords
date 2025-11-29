@@ -64,14 +64,17 @@ export const ChordEditor: React.FC<ChordEditorProps> = ({ chord, sIdx, cIdx, onC
     ];
 
     return createPortal(
-        <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4" onClick={onClose}>
-            <div className="bg-[#1a1a1f] w-full max-w-md rounded-2xl shadow-2xl overflow-hidden border border-white/10 max-h-[90vh] flex flex-col" onClick={e => e.stopPropagation()}>
-                <div className="p-6 overflow-y-auto custom-scrollbar">
-                    <div className="flex justify-between items-start mb-6">
+        <div className="fixed inset-0 z-[200] flex items-end md:items-center justify-center bg-black/60 backdrop-blur-sm md:p-4" onClick={onClose}>
+            <div
+                className="bg-[#1a1a1f] w-full max-w-md rounded-t-2xl md:rounded-2xl shadow-2xl overflow-hidden border-t md:border border-white/10 max-h-[85vh] md:max-h-[90vh] flex flex-col animate-in slide-in-from-bottom duration-200"
+                onClick={e => e.stopPropagation()}
+            >
+                <div className="p-4 md:p-6 overflow-y-auto custom-scrollbar">
+                    <div className="flex justify-between items-start mb-4 md:mb-6">
                         <div>
-                            <h3 className="text-sm font-medium text-gray-400 mb-1">Edit Chord</h3>
+                            <h3 className="text-xs md:text-sm font-medium text-gray-400 mb-1">Edit Chord</h3>
                             <div className="flex items-center gap-3">
-                                <span className="text-3xl font-bold text-white">{previewSymbol}</span>
+                                <span className="text-2xl md:text-3xl font-bold text-white">{previewSymbol}</span>
                                 <button
                                     onClick={() => {
                                         const chordData = Chord.get(previewSymbol);
@@ -91,23 +94,23 @@ export const ChordEditor: React.FC<ChordEditorProps> = ({ chord, sIdx, cIdx, onC
                                 </button>
                             </div>
                         </div>
-                        <button onClick={onClose} className="text-gray-500 hover:text-white">
+                        <button onClick={onClose} className="p-2 -mr-2 text-gray-500 hover:text-white">
                             <X size={20} />
                         </button>
                     </div>
 
-                    <div className="space-y-6">
+                    <div className="space-y-4 md:space-y-6">
                         {/* Duration Selector */}
                         <div>
-                            <label className="block text-xs font-bold text-gray-500 uppercase mb-2">时长 (Duration)</label>
+                            <label className="block text-[10px] md:text-xs font-bold text-gray-500 uppercase mb-2">时长 (Duration)</label>
                             <div className="grid grid-cols-4 gap-2">
                                 {[4, 2, 1, 0.5].map((beats) => (
                                     <button
                                         key={beats}
                                         onClick={() => setDuration(beats)}
-                                        className={`py-2 rounded-lg text-sm font-medium transition-all ${duration === beats
-                                                ? 'bg-primary text-white shadow-lg shadow-primary/30'
-                                                : 'bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-white/10'
+                                        className={`py-1.5 md:py-2 rounded-lg text-xs md:text-sm font-medium transition-all ${duration === beats
+                                            ? 'bg-primary text-white shadow-lg shadow-primary/30'
+                                            : 'bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-white/10'
                                             }`}
                                     >
                                         {beats === 4 && '4'}
@@ -121,13 +124,13 @@ export const ChordEditor: React.FC<ChordEditorProps> = ({ chord, sIdx, cIdx, onC
 
                         {/* Root Selector */}
                         <div>
-                            <label className="block text-xs font-bold text-gray-500 uppercase mb-2">根音 (Root)</label>
-                            <div className="grid grid-cols-4 sm:grid-cols-6 gap-2">
+                            <label className="block text-[10px] md:text-xs font-bold text-gray-500 uppercase mb-2">根音 (Root)</label>
+                            <div className="grid grid-cols-6 gap-1.5 md:gap-2">
                                 {ROOTS.map(r => (
                                     <button
                                         key={r}
                                         onClick={() => setRoot(r)}
-                                        className={`p-2 rounded text-sm font-bold transition-colors ${root === r ? 'bg-primary text-white' : 'bg-[#2d2d35] hover:bg-[#3d3d45] text-gray-300'
+                                        className={`p-1.5 md:p-2 rounded text-xs md:text-sm font-bold transition-colors ${root === r ? 'bg-primary text-white' : 'bg-[#2d2d35] hover:bg-[#3d3d45] text-gray-300'
                                             }`}
                                     >
                                         {r}
@@ -138,13 +141,13 @@ export const ChordEditor: React.FC<ChordEditorProps> = ({ chord, sIdx, cIdx, onC
 
                         {/* Quality Selector */}
                         <div>
-                            <label className="block text-xs font-bold text-gray-500 uppercase mb-2">性质 (Quality)</label>
-                            <div className="grid grid-cols-3 gap-2">
+                            <label className="block text-[10px] md:text-xs font-bold text-gray-500 uppercase mb-2">性质 (Quality)</label>
+                            <div className="grid grid-cols-4 md:grid-cols-3 gap-1.5 md:gap-2">
                                 {QUALITIES.map(q => (
                                     <button
                                         key={q.value}
                                         onClick={() => setQuality(q.value)}
-                                        className={`p-2 rounded text-xs font-medium transition-colors ${quality === q.value ? 'bg-secondary text-black' : 'bg-[#2d2d35] hover:bg-[#3d3d45] text-gray-300'
+                                        className={`p-1.5 md:p-2 rounded text-[10px] md:text-xs font-medium transition-colors truncate ${quality === q.value ? 'bg-secondary text-black' : 'bg-[#2d2d35] hover:bg-[#3d3d45] text-gray-300'
                                             }`}
                                     >
                                         {q.label}
@@ -155,11 +158,11 @@ export const ChordEditor: React.FC<ChordEditorProps> = ({ chord, sIdx, cIdx, onC
 
                         {/* Bass Note (Optional) */}
                         <div>
-                            <label className="block text-xs font-bold text-gray-500 uppercase mb-2">低音 (Bass / Inversion)</label>
-                            <div className="flex gap-2 overflow-x-auto pb-2 no-scrollbar">
+                            <label className="block text-[10px] md:text-xs font-bold text-gray-500 uppercase mb-2">低音 (Bass)</label>
+                            <div className="flex gap-1.5 md:gap-2 overflow-x-auto pb-2 no-scrollbar">
                                 <button
                                     onClick={() => setBass('')}
-                                    className={`px-3 py-1 rounded text-xs ${!bass ? 'bg-gray-600 text-white' : 'bg-[#2d2d35] text-gray-400'}`}
+                                    className={`px-3 py-1 rounded text-xs whitespace-nowrap ${!bass ? 'bg-gray-600 text-white' : 'bg-[#2d2d35] text-gray-400'}`}
                                 >
                                     无
                                 </button>
@@ -178,7 +181,7 @@ export const ChordEditor: React.FC<ChordEditorProps> = ({ chord, sIdx, cIdx, onC
 
                         <button
                             onClick={handleSave}
-                            className="w-full py-3 bg-primary hover:bg-indigo-600 text-white font-bold rounded-lg flex items-center justify-center gap-2 mt-4"
+                            className="w-full py-3 bg-primary hover:bg-indigo-600 text-white font-bold rounded-xl flex items-center justify-center gap-2 mt-4 shadow-lg shadow-primary/20 active:scale-95 transition-all"
                         >
                             <Check size={18} />
                             保存修改
