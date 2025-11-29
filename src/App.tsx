@@ -91,15 +91,15 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className={`${getBackgroundStyle()} min-h-screen transition-colors duration-1000`}>
-      <div className="flex h-screen overflow-hidden pb-[env(safe-area-inset-bottom)] md:pb-0">
+    <div className={`${getBackgroundStyle()} min-h-[100dvh] transition-colors duration-1000`}>
+      <div className="flex h-[100dvh] overflow-hidden pb-[env(safe-area-inset-bottom)] md:pb-0">
         {/* Controls Sidebar - Mobile: View based, Desktop: Sidebar */}
-        <div className={`${activeTab === 'generator' ? 'block' : 'hidden'} md:block md:relative z-40 h-[calc(100vh-4rem)] md:h-screen w-full md:w-auto overflow-y-auto`}>
+        <div className={`${activeTab === 'generator' ? 'block' : 'hidden'} md:block md:relative z-40 h-[calc(100dvh-4rem)] md:h-[100dvh] w-full md:w-auto overflow-y-auto`}>
           <Controls />
         </div>
 
         {/* Main Content - Mobile: View based, Desktop: Flex-1 */}
-        <div className={`${activeTab === 'editor' ? 'flex' : 'hidden'} md:flex flex-1 flex-col h-[calc(100vh-4rem)] md:h-screen overflow-hidden`}>
+        <div className={`${activeTab === 'editor' ? 'flex' : 'hidden'} md:flex flex-1 flex-col h-[calc(100dvh-4rem)] md:h-[100dvh] overflow-hidden`}>
           {/* Header */}
           <header className="p-4 md:p-6 border-b border-white/10 backdrop-blur-sm flex items-center justify-between bg-white/20 dark:bg-black/10">
             <div className="flex items-center gap-3">
@@ -133,6 +133,13 @@ const App: React.FC = () => {
                   <br />
                   <span className="text-sm mt-4 block text-gray-500">AI 驱动 • 专业和弦 • 真实采样</span>
                 </p>
+                <button
+                  onClick={addSection}
+                  className="mt-8 px-8 py-3 bg-primary text-white rounded-xl font-semibold shadow-lg shadow-primary/30 hover:bg-primary/90 hover:scale-105 active:scale-95 transition-all flex items-center gap-2"
+                >
+                  <Plus size={20} />
+                  开始创作
+                </button>
               </div>
             ) : (
               sections.map((section, sIdx) => (
