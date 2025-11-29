@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Play, Edit3, Trash2 } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { Play, Edit3, Trash2, MoreHorizontal, X } from 'lucide-react';
 import { useAudio } from '../hooks/useAudio';
 import { useSongStore } from '../store/songStore';
 import type { ChordType } from '../utils/musicTheory';
@@ -15,8 +15,27 @@ export const ChordCard: React.FC<ChordCardProps> = ({ chord, sIdx, cIdx }) => {
     const { playChord } = useAudio();
     const { settings, removeChord, currentSectionIndex, currentChordIndex } = useSongStore();
     const [isEditing, setIsEditing] = useState(false);
+    const [showMobileMenu, setShowMobileMenu] = useState(false);
+    const menuRef = useRef<HTMLDivElement>(null);
 
     const isPlaying = currentSectionIndex === sIdx && currentChordIndex === cIdx;
+
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent | TouchEvent) => {
+            if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+                setShowMobileMenu(false);
+            }
+        };
+
+        if (showMobileMenu) {
+            document.addEventListener('mousedown', handleClickOutside as EventListener);
+            document.addEventListener('touchstart', handleClickOutside as EventListener);
+        }
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside as EventListener);
+            document.removeEventListener('touchstart', handleClickOutside as EventListener);
+        };
+    }, [showMobileMenu]);
 
     const handlePlay = (e: React.MouseEvent) => {
         e.stopPropagation();
@@ -28,6 +47,13 @@ export const ChordCard: React.FC<ChordCardProps> = ({ chord, sIdx, cIdx }) => {
         if (window.confirm('Delete this chord?')) {
             removeChord(sIdx, cIdx);
         }
+        setShowMobileMenu(false);
+    };
+
+    const handleEdit = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        setIsEditing(true);
+        setShowMobileMenu(false);
     };
 
     // Determine display notation
@@ -47,10 +73,10 @@ export const ChordCard: React.FC<ChordCardProps> = ({ chord, sIdx, cIdx }) => {
     return (
         <>
             <div
-                className={`group/card relative aspect-square flex flex-col justify-center rounded-xl md:rounded-2xl p-2 md:p-4 transition-all cursor-pointer border border-transparent 
+                className={`group/card relative aspect-square flex flex-col justify-center rounded-xl md:rounded-2xl p-2 md:p-4 transition-all cursor-pointer border border-transparent select-none
                 ${isPlaying
                         ? 'bg-primary text-white shadow-lg scale-105 ring-2 ring-primary/50'
-                        : 'bg-white dark:bg-[#2c2c2e] hover:bg-gray-50 dark:hover:bg-[#3a3a3c] hover:-translate-y-1 hover:shadow-xl shadow-sm'
+                        : 'bg-white dark:bg-[#2c2c2e] hover:bg-gray-50 dark:hover:bg-[#3a3a3c] active:scale-95 transition-transform shadow-sm'
                     }`}
                 onClick={handlePlay}
                 onDoubleClick={() => setIsEditing(true)}
@@ -80,8 +106,19 @@ export const ChordCard: React.FC<ChordCardProps> = ({ chord, sIdx, cIdx }) => {
                     </div>
                 </div>
 
-                {/* Hover Actions */}
-                <div className="absolute inset-0 bg-white/80 dark:bg-black/60 opacity-0 group-hover/card:opacity-100 transition-opacity rounded-2xl flex items-center justify-center gap-2 backdrop-blur-[1px]">
+                {/* Mobile Menu Button - Visible on touch, hidden on desktop hover group */}
+                <button
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        setShowMobileMenu(!showMobileMenu);
+                    }}
+                    className={`md:hidden absolute bottom-1 right-1 p-1.5 rounded-full text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 ${isPlaying ? 'text-white/70 hover:text-white' : ''}`}
+                >
+                    <MoreHorizontal size={16} />
+                </button>
+
+                {/* Desktop Hover Actions */}
+                <div className="hidden md:flex absolute inset-0 bg-white/80 dark:bg-black/60 opacity-0 group-hover/card:opacity-100 transition-opacity rounded-2xl items-center justify-center gap-2 backdrop-blur-[1px]">
                     <button
                         onClick={handlePlay}
                         className="p-2 bg-blue-500 rounded-full text-white hover:scale-110 transition-transform shadow-lg"
@@ -90,10 +127,7 @@ export const ChordCard: React.FC<ChordCardProps> = ({ chord, sIdx, cIdx }) => {
                         <Play size={14} fill="currentColor" />
                     </button>
                     <button
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            setIsEditing(true);
-                        }}
+                        onClick={handleEdit}
                         className="p-2 bg-gray-500 rounded-full text-white hover:scale-110 transition-transform shadow-lg"
                         title="Edit"
                     >
@@ -107,6 +141,45 @@ export const ChordCard: React.FC<ChordCardProps> = ({ chord, sIdx, cIdx }) => {
                         <Trash2 size={14} />
                     </button>
                 </div>
+
+                {/* Mobile Action Menu (Overlay) */}
+                {showMobileMenu && (
+                    <div
+                        ref={menuRef}
+                        className="absolute inset-0 z-10 bg-white/95 dark:bg-[#2c2c2e]/95 backdrop-blur-sm rounded-xl flex flex-col items-center justify-center gap-3 animate-in fade-in zoom-in-95 duration-200"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        <div className="flex items-center gap-3">
+                            <button
+                                onClick={handlePlay}
+                                className="p-3 bg-blue-500 rounded-full text-white shadow-lg active:scale-90 transition-transform"
+                            >
+                                <Play size={18} fill="currentColor" />
+                            </button>
+                            <button
+                                onClick={handleEdit}
+                                className="p-3 bg-gray-500 rounded-full text-white shadow-lg active:scale-90 transition-transform"
+                            >
+                                <Edit3 size={18} />
+                            </button>
+                            <button
+                                onClick={handleDelete}
+                                className="p-3 bg-red-500 rounded-full text-white shadow-lg active:scale-90 transition-transform"
+                            >
+                                <Trash2 size={18} />
+                            </button>
+                        </div>
+                        <button
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                setShowMobileMenu(false);
+                            }}
+                            className="absolute top-1 right-1 p-1 text-gray-400"
+                        >
+                            <X size={14} />
+                        </button>
+                    </div>
+                )}
             </div>
 
             {isEditing && (
