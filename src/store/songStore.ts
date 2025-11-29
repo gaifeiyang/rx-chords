@@ -38,6 +38,8 @@ export type SongState = {
     setTempo: (bpm: number) => void;
     setUseDrums: (use: boolean) => void;
     setSections: (sections: Section[]) => void;
+    addSection: () => void;
+    removeSection: (index: number) => void;
     updateSection: (index: number, section: Partial<Section>) => void;
     updateChord: (sIdx: number, cIdx: number, chord: Partial<ChordType>) => void;
     addChord: (sIdx: number, chord: ChordType) => void;
@@ -72,6 +74,24 @@ export const useSongStore = create<SongState>((set) => ({
     setTempo: (tempo) => set({ tempo }),
     setUseDrums: (useDrums) => set({ useDrums }),
     setSections: (sections) => set({ sections }),
+
+    addSection: () => set((state) => {
+        const newSection: Section = {
+            id: Math.random().toString(36).substr(2, 9),
+            name: 'New Section',
+            type: 'Verse',
+            chords: [],
+            bars: 4,
+            loopCount: 1
+        };
+        return { sections: [...state.sections, newSection] };
+    }),
+
+    removeSection: (index) => set((state) => {
+        const sections = [...state.sections];
+        sections.splice(index, 1);
+        return { sections };
+    }),
 
     updateSection: (index, newSection) => set((state) => {
         const sections = [...state.sections];
