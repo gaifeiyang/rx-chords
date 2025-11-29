@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Play, Plus, Repeat, Trash2, Edit2, Check } from 'lucide-react';
+import { Play, Plus, Repeat, Trash2, Edit2, Check, ArrowUp, ArrowDown } from 'lucide-react';
 import type { Section } from '../store/songStore';
 import { ChordCard } from './ChordCard';
 import { useSongStore } from '../store/songStore';
@@ -16,8 +16,10 @@ export const SectionBlock: React.FC<SectionBlockProps> = ({ section, sIdx }) => 
     const updateSection = useSongStore(state => state.updateSection);
     const addChord = useSongStore(state => state.addChord);
     const removeSection = useSongStore(state => state.removeSection);
+    const moveSection = useSongStore(state => state.moveSection);
     const isPlaying = useSongStore(state => state.isPlaying);
     const currentSectionIndex = useSongStore(state => state.currentSectionIndex);
+    const sections = useSongStore(state => state.sections);
 
     const [isRenaming, setIsRenaming] = useState(false);
     const [tempName, setTempName] = useState(section.name);
@@ -119,6 +121,28 @@ export const SectionBlock: React.FC<SectionBlockProps> = ({ section, sIdx }) => 
                 </div>
 
                 <div className="flex items-center gap-4">
+                    {/* Move Controls */}
+                    <div className="flex items-center gap-1">
+                        <button
+                            onClick={() => moveSection(sIdx, sIdx - 1)}
+                            disabled={sIdx === 0}
+                            className="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 text-gray-400 hover:text-primary disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                            title="Move Up"
+                        >
+                            <ArrowUp size={16} />
+                        </button>
+                        <button
+                            onClick={() => moveSection(sIdx, sIdx + 1)}
+                            disabled={sIdx === sections.length - 1}
+                            className="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 text-gray-400 hover:text-primary disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                            title="Move Down"
+                        >
+                            <ArrowDown size={16} />
+                        </button>
+                    </div>
+
+                    <div className="w-px h-4 bg-gray-200 dark:bg-white/10" />
+
                     {/* Loop Control */}
                     <div className="flex items-center gap-2 bg-gray-100 dark:bg-white/5 px-3 py-1.5 rounded-lg border border-transparent hover:border-gray-300 dark:hover:border-white/20 transition-colors">
                         <Repeat size={14} className="text-gray-500 dark:text-gray-400" />
