@@ -106,7 +106,7 @@ export const SectionBlock: React.FC<SectionBlockProps> = ({ section, sIdx }) => 
                             </h3>
                             <button
                                 onClick={() => setIsRenaming(true)}
-                                className="opacity-0 group-hover/title:opacity-100 text-gray-400 hover:text-primary transition-all"
+                                className="opacity-100 md:opacity-0 md:group-hover/title:opacity-100 text-gray-400 hover:text-primary transition-all p-2 md:p-0"
                             >
                                 <Edit2 size={14} />
                             </button>
@@ -193,10 +193,10 @@ export const SectionBlock: React.FC<SectionBlockProps> = ({ section, sIdx }) => 
                 {/* Add Chord Button */}
                 <button
                     onClick={handleAddChord}
-                    className="aspect-square rounded-2xl border-2 border-dashed border-gray-300 dark:border-white/10 flex flex-col items-center justify-center text-gray-400 dark:text-gray-500 hover:text-primary hover:border-primary hover:bg-primary/5 transition-all group/add"
+                    className="aspect-square rounded-xl md:rounded-2xl border-2 border-dashed border-gray-300 dark:border-white/10 flex flex-col items-center justify-center text-gray-400 dark:text-gray-500 hover:text-primary hover:border-primary hover:bg-primary/5 transition-all group/add active:scale-95"
                 >
                     <Plus size={24} className="group-hover/add:scale-110 transition-transform" />
-                    <span className="text-xs font-medium mt-2">Add Chord</span>
+                    <span className="text-[10px] md:text-xs font-medium mt-1 md:mt-2">Add</span>
                 </button>
             </div>
         </div>
