@@ -40,6 +40,7 @@ export type SongState = {
     setSections: (sections: Section[]) => void;
     addSection: () => void;
     removeSection: (index: number) => void;
+    moveSection: (fromIndex: number, toIndex: number) => void;
     updateSection: (index: number, section: Partial<Section>) => void;
     updateChord: (sIdx: number, cIdx: number, chord: Partial<ChordType>) => void;
     addChord: (sIdx: number, chord: ChordType) => void;
@@ -90,6 +91,14 @@ export const useSongStore = create<SongState>((set) => ({
     removeSection: (index) => set((state) => {
         const sections = [...state.sections];
         sections.splice(index, 1);
+        return { sections };
+    }),
+
+    moveSection: (fromIndex, toIndex) => set((state) => {
+        if (toIndex < 0 || toIndex >= state.sections.length) return {};
+        const sections = [...state.sections];
+        const [movedSection] = sections.splice(fromIndex, 1);
+        sections.splice(toIndex, 0, movedSection);
         return { sections };
     }),
 
