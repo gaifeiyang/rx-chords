@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Controls } from './components/Controls';
 import { SectionBlock } from './components/SectionBlock';
 import { useSongStore } from './store/songStore';
-import { Music, Settings as SettingsIcon } from 'lucide-react';
+import { Music, Settings as SettingsIcon, Menu, X } from 'lucide-react';
 import { useAudio } from './hooks/useAudio';
 import { StructureFlow } from './components/StructureFlow';
 import { SettingsModal } from './components/SettingsModal';
@@ -10,6 +10,7 @@ import { SettingsModal } from './components/SettingsModal';
 const App: React.FC = () => {
   const { sections, genre, settings, isPlaying } = useSongStore();
   const [showSettings, setShowSettings] = useState(false);
+  const [showMobileMenu, setShowMobileMenu] = useState(false);
   const { playFullSong, stop } = useAudio();
 
   // Theme Effect
@@ -72,11 +73,31 @@ const App: React.FC = () => {
   return (
     <div className={`${getBackgroundStyle()} min-h-screen transition-colors duration-1000`}>
       <div className="flex h-screen overflow-hidden">
-        <Controls />
+        {/* Mobile Menu Button */}
+        <button
+          onClick={() => setShowMobileMenu(!showMobileMenu)}
+          className="md:hidden fixed top-4 left-4 z-50 p-3 rounded-lg bg-primary text-white shadow-lg"
+        >
+          {showMobileMenu ? <X size={24} /> : <Menu size={24} />}
+        </button>
+
+        {/* Controls Sidebar - Hidden on mobile by default */}
+        <div className={`${showMobileMenu ? 'translate-x-0' : '-translate-x-full'
+          } md:translate-x-0 fixed md:relative z-40 transition-transform duration-300 ease-in-out h-screen w-full md:w-auto`}>
+          <Controls />
+        </div>
+
+        {/* Overlay for mobile menu */}
+        {showMobileMenu && (
+          <div
+            className="md:hidden fixed inset-0 bg-black/50 z-30"
+            onClick={() => setShowMobileMenu(false)}
+          />
+        )}
 
         <div className="flex-1 flex flex-col h-screen overflow-hidden">
           {/* Header */}
-          <header className="p-6 border-b border-white/10 backdrop-blur-sm flex items-center justify-between bg-white/20 dark:bg-black/10">
+          <header className="p-4 md:p-6 border-b border-white/10 backdrop-blur-sm flex items-center justify-between bg-white/20 dark:bg-black/10">
             <div className="flex items-center gap-3">
               <Music className="text-primary" size={32} />
               <div>
@@ -96,7 +117,7 @@ const App: React.FC = () => {
           <StructureFlow />
 
           {/* Sections */}
-          <div className="flex-1 overflow-y-auto p-8 space-y-8">
+          <div className="flex-1 overflow-y-auto p-4 md:p-8 space-y-8">
             {sections.length === 0 ? (
               <div className="flex flex-col items-center justify-center h-full text-center">
                 <div className="w-24 h-24 rounded-3xl bg-gradient-to-tr from-blue-400 to-purple-500 flex items-center justify-center mb-8 shadow-2xl shadow-blue-500/20">
