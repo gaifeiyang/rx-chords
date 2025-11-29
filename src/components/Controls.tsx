@@ -101,7 +101,7 @@ export const Controls: React.FC = () => {
                     max="240"
                     value={tempo}
                     onChange={(e) => setTempo(Number(e.target.value))}
-                    className="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer slider accent-primary"
+                    className="w-full h-4 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer slider accent-primary touch-manipulation"
                 />
                 <div className="flex justify-between text-xs text-gray-400 dark:text-gray-600">
                     <span>40</span>
@@ -166,7 +166,7 @@ export const Controls: React.FC = () => {
                             max="100"
                             value={settings.drumComplexity}
                             onChange={(e) => updateSettings({ drumComplexity: parseInt(e.target.value) })}
-                            className="w-full h-1 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer accent-primary"
+                            className="w-full h-4 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer accent-primary touch-manipulation"
                         />
                     </div>
 
@@ -182,7 +182,7 @@ export const Controls: React.FC = () => {
                             max="0"
                             value={settings.drumVolume}
                             onChange={(e) => updateSettings({ drumVolume: parseInt(e.target.value) })}
-                            className="w-full h-1 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer accent-primary"
+                            className="w-full h-4 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer accent-primary touch-manipulation"
                         />
                     </div>
                 </div>
